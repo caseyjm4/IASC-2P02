@@ -13,7 +13,6 @@ aspectratio: window.innerWidth / window.innerHeight
 }
 
 
-
 /***********
  ** SCENE **
  ***********/
@@ -48,12 +47,14 @@ controls.enableDamping = true
 /************
  ** MESHES **
  ************/
-//testSphere
-const sphereGeometry = new THREE.SphereGeometry(1)
-const sphereMaterial = new THREE.MeshNormalMaterial()
-const testSphere = new THREE.Mesh(sphereGeometry, sphereMaterial)
 
-scene.add(testSphere)
+
+//testDodecahedron
+const dodecahedronGeometry = new THREE.DodecahedronGeometry(1)
+const dodecahedronMaterial = new THREE.MeshNormalMaterial()
+const testDodecahedron = new THREE.Mesh(dodecahedronGeometry, dodecahedronMaterial)
+
+scene.add(testDodecahedron)
 
 // Plane
 const planeGeometry = new THREE.PlaneGeometry(10, 10, 50, 50)
@@ -77,9 +78,9 @@ const ui = new dat.GUI()
 // UI Object 
 const uiObject = {
     speed: 1,
-    distance: 1
+    distance: 1,
+    rotationSpeed: 1
 }
-
 // plane UI
 const planeFolder = ui.addFolder('Plane')
 
@@ -87,22 +88,30 @@ planeFolder
     .add(planeMaterial, 'wireframe')
     .name("Toggle Wireframe")
 
-// testSphere UI
-const sphereFolder = ui.addFolder('Sphere')
+// testDodecahedron UI
+const DodecahedronFolder = ui.addFolder('Dodecahedron')
 
-sphereFolder
+    DodecahedronFolder
     .add(uiObject, 'speed')
     .min(0.1)
     .max(10)
     .step(0.1)
     .name('Speed')
 
-    sphereFolder
+    DodecahedronFolder
     .add(uiObject, 'distance')
     .min(0.1)
     .max(10)
     .step(0.1)
     .name('Distance')
+
+   DodecahedronFolder
+    .add(uiObject, 'rotationSpeed')
+    .min(0)
+    .max(10)
+    .step(0.1)
+    .name('Rotation Speed')
+
 
 /********************
  ** ANIMATION LOOP **
@@ -115,8 +124,9 @@ sphereFolder
     // Return elapsedTime
     const elapsedTime = clock.getElapsedTime()
 
-    // Animate Sphere
-    testSphere.position.y = Math.sin(elapsedTime * uiObject.speed) * uiObject.distance
+    // Animate Dodecahedron
+    testDodecahedron.position.y = Math.sin(elapsedTime * uiObject.speed) * uiObject.distance
+    testDodecahedron.rotation.y = elapsedTime * uiObject.rotationSpeed 
 
     // Update OrbitControls
     controls.update()
