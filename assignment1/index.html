@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<head>
+    <title>Assignment 1</title>
+
+    <!-- css -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- three.js importmap -->
+     <script type="importmap">
+        {
+            "imports": {
+             "three": "https://ga.jspm.io/npm:three@0.182.0/build/three.module.js",
+             "OrbitControls": "https://ga.jspm.io/npm:three@0.182.0/examples/jsm/controls/OrbitControls.js",
+             "lil-gui": "https://ga.jspm.io/npm:lil-gui@0.21.0/dist/lil-gui.esm.js"
+            }
+        }
+        </script>
+
+    <!-- three.js scene -->
+     <script src="script.js" type="module"></script>
+
+</head>
+<body>
+    <div class ="flexbox">
+        <!-- ESSAY -->
+        <div class="essay">
+         <h2>1. Flatness</h2>
+         <p><span class="clickable" id="part-one"> From inside the cave...</span></p>
+
+         <p> People have no knowledge of what exists beyond the walls around them. Everything they understand about the world comes from the shadows
+             projected onto them.The only thing they know is the shadows from outside projected onto the wall, which is only just part of a whole.  
+             Along the wall, there are three distinct shadows, that <span class="clickable" id="first-change"> mysteriously morph and change shape.</span>
+             Above this, a series of large triangular shadows joined together like an endless fence stretching as far as they can see. It acts as a wall or barrier to the people inside the cave,
+              reinforcing their prison. As time passes,
+            <span class="clickable" id="second-change"> the spikes slowly grow taller, creeping up the wall</span> as if the barrier is reinforcing its control over the cave and the people inside. 
+            They interpret this as the ‘fence’ having the ability to grow taller, barricading them inside the only world they've known. At times, the strange figures above the spikes will transform, changing shape continuously. 
+            They are mesmerizing to look at although the people in the cave cannot grasp what they could possibly be. Because the shadows are the only reality they have ever known, the people within the cave accept these movements as normal. </p>
+
+         <p> Nick Sousanis’s concept of Flatness describes a way of thinking where a complex idea or reality is reduced to only one perspective of seeing or understanding it. Flatness does not only just mean something is two-dimensional, but is also the mindset of taking a single perspective as the complete truth because you unable to imagine anything beyond it. With a flat view, there is no reason to question whether there may be deeper causes or invisible things shaping what is visible. The people inside the cave demonstrate flatness in their thinking and idea of their world. Since the triangular spikes and strange transforming shapes on the wall are all they have ever seen, they believe there is a real barrier, and assume it has the power to grow and control their world. They never consider that the shapes might be created by objects outside the cave or by changes in light, because their understanding is limited to the surface in front of them. Their reality exists only on the wall itself. In this way, their worldview is flat because it is built entirely from appearances rather than from an awareness that there could be something outside of what they see, that affects their reality.</p>
+
+         <h2>2. Seeing Double</h2>
+         <p><span class="clickable" id="part-two">From outside the cave...</span></p>
+
+         <p>Outside of the cave, although the scene is simple, it looks very different from what the people inside could possibly imagined. A group of tall pine trees stand near the entrance of the cave. Their pointy tops creating sharp edges and shapes. The trees are spread out across the whole entrance, the sunlight casting shadows all across the walls of the cave. As the day passes,<span class="clickable" id="third-change"> the sun's position changes, </span>.
+           lowering behind the trees and casting long shadows on the cave. From this perspective, the spikes from inside are just the result of light shifting and stretching the trees shadows. When the light is higher in the sky, the shadows appear shorter, but as it drops closer to the horizon, the shadows lengthen and sharpen, creating the illusion of a barrier or fence that is growing and getting sharper. Outside the cave there are multiple kites tied onto some of the trees, in a very windy area.<span class="clickable" id="fourth-change"> Every day the wind will take the kites spinning and soaring in the sky,</span>creating strange shadows that transform and create illusions inside the cave. Outside the cave, they are three-dimensional objects that spin, but in the flat perspective of the prisoners, they are flat disfigured shadows.</p>
+
+         <p> Nick Sousanis’s concept of Seeing Double, in my understanding, means being able to understand something from more than one perspective at the same time, recognizing both what appears to be happening and what is actually happening. Seeing double allows for someone to connect what they are aware of, to external views that they might not be aware of. Outside the cave, people can clearly see the trees standing near the entrance and the sun slowly changing position in the sky, casting light that creates long shadows. They also see the kites flying and bobbing in the sky. Inside the cave however, the events look completely different. The people there see only the growing spikes climbing the wall and the sudden moving figures floating overhead, which they might interpret as a physical barrier, or be extremely confused how the shapes are able to disappear and reappear again. The two realms are connected through the interaction of light and objects: the movement of the sun stretches the trees’ shadows, and the kites in the sunlight produces the mysterious shapes. What appears as an ordinary day in one perspective becomes, inside the cave, a complete different reality.  </p>
+        </div>
+
+        <!-- SCENE -->
+    <div class="scene"></div>
+        <canvas class ="webgl"></canvas>
+    </div>
+</body>
