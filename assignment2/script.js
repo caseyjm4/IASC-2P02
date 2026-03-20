@@ -78,29 +78,38 @@ scene.add(directionalLight)
 //Cube Geometry
 const cubeGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5)
 
-const drawCube = (height, color) =>
+const drawCube = (height, params) =>
 {
     
     //Create cube material
     const material = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(color)
+        color: new THREE.Color(params.color)
     })
 
     // Create cube
     const cube = new THREE.Mesh(cubeGeometry,material)
 
     // Position cube
-    cube.position.x = (Math.random() - 0.5) * 10
-    cube.position.z = (Math.random() - 0.5) * 10
+    cube.position.x = (Math.random() - 0.5) * params.diameter
+    cube.position.z = (Math.random() - 0.5) * params.diameter
     cube.position.y = height - 10
 
     // Randomize cube rotation
+    if (params.randomized) {
     cube.rotation.x = Math.random() * 2 * Math.PI
     cube.rotation.y = Math.random() * 2 * Math.PI
     cube.rotation.z = Math.random() * 2 * Math.PI
+    }
 
-    // Add cube to scene
-    scene.add(cube)
+    // Scale cubes
+    cube.scale.x = params.scale
+    cube.scale.y = params.scale
+    cube.scale.z = params.scale
+
+    
+    // Add cube to group
+    params.group.add(cube)
+    
 
 }
 
@@ -117,20 +126,52 @@ const ui = new dat.GUI()
 
 let preset = {}
 
+// Groups
+
+const group1 = new THREE.Group()
+scene.add(group1)
+const group2 = new THREE.Group()
+scene.add(group2)
+const group3 = new THREE.Group()
+scene.add(group3)
+
 const uiObj = {
     sourceText: "The quick brown fox jumped over the lazy dog",
     saveSourceText() {
         saveSourceText()
     },
-    term1: 'fox',
-    color1:'#aa00ff',
-    term2:'dog',
-    color2:'#00ffaa',
-    term3:'',
-    color3:'',
+
+    term1:{
+        term: 'fox',
+        color: '#aa00ff',
+        diameter: 10,
+        group: group1,
+        nCubes: 100,
+        randomized: true,
+        scale: 1
+    },
+     term2:{
+        term: 'dog',
+        color: '#00ffaa',
+        diameter: 10,
+        group: group2,
+        nCubes: 100,
+        randomized: true,
+        scale: 1
+    },
+     term3:{
+        term: '',
+        color: '',
+        diameter: 10,
+        group: group3,
+        nCubes: 100,
+        randomized: true,
+        scale: 1
+    },
     saveTerms(){
         saveTerms()
-    }
+    },
+    rotateCamera: false
     
 }
 
@@ -153,20 +194,13 @@ const saveTerms = () =>
    // UI
    preset = ui.save
    visualizeFolder.hide()
+   cameraFolder.show()
 
-   // Testing
-   /*console.log(uiObj.term1)
-   console.log(uiObj.color1)
-   console.log(uiObj.term2)
-   console.log(uiObj.color2)
-   console.log(uiObj.term3)
-   console.log(uiObj.color3)
-   */
 
    //Text Analysis
    findSearchTermInTokenizedText(uiObj.term1)
-   findSearchTermInTokenizedText(uiObj.term2, uiObj.color2)
-   findSearchTermInTokenizedText(uiObj.term3, uiObj.color3)
+   findSearchTermInTokenizedText(uiObj.term2)
+   findSearchTermInTokenizedText(uiObj.term3)
 }
 
 // Text Folder
@@ -180,41 +214,60 @@ textFolder
     .add(uiObj, 'saveSourceText')
     .name("Save")
 
-// Terms and Vizualize Folder
+// Terms, Vizualize and Camera Folders
 const termsFolder = ui.addFolder("Search Terms")
 const visualizeFolder = ui.addFolder("Visualize")
+const cameraFolder = ui.addFolder("Camera")
 
 termsFolder
-    .add(uiObj, 'term1')
+    .add(uiObj.term1, 'term')
     .name("Term 1")
 
 termsFolder
-    .addColor(uiObj, 'color1')
+    .add(group1, 'visible')
+    .name("Term 1 Visibility ")
+
+termsFolder
+    .addColor(uiObj.term1, 'color')
     .name("Term 1 Color")
 
 termsFolder
-    .add(uiObj, 'term2')
+    .add(uiObj.term2, 'term')
     .name("Term 2")
 
 termsFolder
-    .addColor(uiObj, 'color2')
+    .add(group2, 'visible')
+    .name("Term 2 Visibility ")
+
+termsFolder
+    .addColor(uiObj.term2, 'color')
     .name("Term 2 Color")
 
 termsFolder
-    .add(uiObj, 'term3')
+    .add(uiObj.term3, 'term')
     .name("Term 3")
 
 termsFolder
-    .addColor(uiObj, 'color3')
+    .add(group3, 'visible')
+    .name("Term 3 Visibility ")
+
+termsFolder
+    .addColor(uiObj.term3, 'color')
     .name("Term 3 Color")
 
 visualizeFolder
     .add(uiObj, 'saveTerms')
     .name("Visualize")
 
-// Terms and Visualize folders are hidden by default
+cameraFolder
+.add(uiObj, 'rotateCamera')
+.name("Turntable")
+
+
+// Terms, Visualize, and Camera folders are hidden by default
 termsFolder.hide()
 visualizeFolder.hide()
+cameraFolder.hide()
 
 /********************
  ** TEXT ANALYSIS  **
@@ -235,20 +288,23 @@ const tokenizeSourceText = (sourceText) =>
 }
 
 //Find searchTerm in tokenizedText
-const findSearchTermInTokenizedText = (term, color) =>
+const findSearchTermInTokenizedText = (params) =>
 {
     //Use a for loop to go through the tokenizedText array
     for (let i = 0; i<tokenizedText.length; i++)
     {
         // if tokenizedText[i] matches our searchTerm, then we draw a cube
-        if(tokenizedText[i] === term){
+        if(tokenizedText[i] === params.term){
             // convert i into height which is a value between 0 and 20
             const height = (100 / tokenizedText.length) * i * 0.2
 
 
-            // call drawCube function 100 times using converted height value
-            for(let a = 0; a < 100; a++)
-            drawCube(height, color)
+            // call drawCube function nCubes times using converted height value
+            for(let a = 0; a < params.nCubes; a++)
+            {
+                drawCube(height, params)
+            }
+           
         }
     }
 }
@@ -271,6 +327,15 @@ const findSearchTermInTokenizedText = (term, color) =>
 
     // Update OrbitControls
     controls.update()
+
+    // Rotate Camera
+    if(uiObj.rotateCamera)
+    {
+        camera.position.x = Math.sin (elapsedTime * 0.1) * 20
+        camera.position.z = Math.cos (elapsedTime * 0.1) * 20
+        camera.position.y = 5
+        camera.lookAt(0, 0, 0)
+    }
 
     // Renderer
     renderer.render(scene, camera)
