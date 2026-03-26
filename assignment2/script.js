@@ -70,6 +70,10 @@ controls.enableDamping = true
 const directionalLight = new THREE.DirectionalLight(0x404040, 100)
 scene.add(directionalLight)
 
+//Ambient Light
+const ambientLight= new THREE.AmbientLight(0xffffff, 0.5)
+scene.add(ambientLight)
+
 /************
  ** MESHES **
  ************/
@@ -82,9 +86,31 @@ const drawCube = (height, params) =>
 {
     
     //Create cube material
-    const material = new THREE.MeshStandardMaterial({
+
+    let material 
+    if(params.emissive)
+    {
+        material = new THREE.MeshLambertMaterial({
+        emissive: new THREE.Color(params.color),
+        })
+    } else {
+        material = new THREE.MeshStandardMaterial({
         color: new THREE.Color(params.color)
     })
+}
+
+    // Transparency 
+    if(params.transparent)
+    {
+        material.transparent = true
+        material.opacity = 1 - (height * 0.05)
+    }
+
+    // Wireframe
+    if(params.wireframe)
+    {
+        material.wireframe = true
+    }
 
     // Create cube
     const cube = new THREE.Mesh(cubeGeometry,material)
@@ -113,11 +139,6 @@ const drawCube = (height, params) =>
 
 }
 
-//drawCube (0, 'red')
-//drawCube (1, 'green')
-//drawCube (2, 'yellow')
-//drawCube (3, 'blue')
-
 /********
  ** UI **
  ********/
@@ -136,37 +157,49 @@ const group3 = new THREE.Group()
 scene.add(group3)
 
 const uiObj = {
-    sourceText: "The quick brown fox jumped over the lazy dog",
+    sourceText: " ",
     saveSourceText() {
         saveSourceText()
     },
 
     term1:{
-        term: 'fox',
-        color: '#aa00ff',
-        diameter: 10,
+        term: 'destruction',
+        color: '#1B4B7E',
+        diameter: 14,
+        emissive: false,
         group: group1,
-        nCubes: 100,
+        nCubes: 300,
         randomized: true,
-        scale: 1
+        scale: 0.5,
+        transparent: false,
+        wireframe: true
+
+    
     },
      term2:{
-        term: 'dog',
-        color: '#00ffaa',
+        term: '626',
+        color: '#a20000',
         diameter: 10,
+        emissive: false,
         group: group2,
-        nCubes: 100,
+        nCubes: 50,
         randomized: true,
-        scale: 1
+        scale: 2,
+        transparent: true,
+        wireframe: false
+       
     },
      term3:{
-        term: '',
-        color: '',
-        diameter: 10,
+        term: 'ohana',
+        color: '#fcd514',
+        diameter: 8,
+        emissive: true,
         group: group3,
-        nCubes: 100,
+        nCubes: 200,
         randomized: true,
-        scale: 1
+        scale: 1,
+        transparent: false,
+        wireframe: false
     },
     saveTerms(){
         saveTerms()
@@ -310,10 +343,6 @@ const findSearchTermInTokenizedText = (params) =>
 }
 
 
-//findSearchTermInTokenizedText("cat", "green")
-//findSearchTermInTokenizedText("princess", "fuchsia")
-//findSearchTermInTokenizedText("kingdom", "gold")
-
 /********************
  ** ANIMATION LOOP **
  ********************/
@@ -328,6 +357,7 @@ const findSearchTermInTokenizedText = (params) =>
     // Update OrbitControls
     controls.update()
 
+
     // Rotate Camera
     if(uiObj.rotateCamera)
     {
@@ -336,6 +366,7 @@ const findSearchTermInTokenizedText = (params) =>
         camera.position.y = 5
         camera.lookAt(0, 0, 0)
     }
+
 
     // Renderer
     renderer.render(scene, camera)
